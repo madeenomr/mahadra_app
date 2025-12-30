@@ -1,0 +1,102 @@
+import 'package:flutter/material.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'package:url_launcher/url_launcher.dart';
+
+void main() {
+  runApp(const MaterialApp(
+      debugShowCheckedModeBanner: false,
+          //    (   )
+              builder: (context, child) {
+                    return Directionality(textDirection: TextDirection.rtl, child: child!);
+                        },
+                            home: MahadraHome(),
+                              ));
+                              }
+
+                              class MahadraHome extends StatefulWidget {
+                                const MahadraHome({super.key});
+
+                                  @override
+                                    State<MahadraHome> createState() => _MahadraHomeState();
+                                    }
+
+                                    class _MahadraHomeState extends State<MahadraHome> {
+                                      // ===   ===
+                                        final String currentVersion = "1.0.0"; //  
+
+                                            //    (    mahadra_app )
+                                              final String versionUrl = "https://raw.githubusercontent.com/madeenomr/mahadra_app/main/version.json";
+
+                                                @override
+                                                  void initState() {
+                                                      super.initState();
+                                                          checkForUpdates(); //   
+                                                            }
+
+                                                              Future<void> checkForUpdates() async {
+                                                                  try {
+                                                                        print("   ...");
+                                                                              final response = await http.get(Uri.parse(versionUrl));
+                                                                                    if (response.statusCode == 200) {
+                                                                                            final data = json.decode(response.body);
+                                                                                                    String serverVersion = data['version'];
+                                                                                                            String downloadUrl = data['url'];
+                                                                                                            
+                                                                                                                    print("  : $currentVersion");
+                                                                                                                            print("  : $serverVersion");
+                                                                                                                            
+                                                                                                                                    if (serverVersion != currentVersion) {
+                                                                                                                                              showUpdateDialog(downloadUrl);
+                                                                                                                                                      }BuildContext context) {
+                                                                                                                                                          return Scaffold(
+                                                                                                                                                                appBar: AppBar(
+                                                                                                                                                                        title: const Text(" "),
+                                                                                                                                                                                backgroundColor: Colors.green[800],
+                                                                                                                                                                                        centerTitle: true,
+                                                                                                                                                                                              ),
+                                                                                                                                                                                                    body: Center(
+                                                                                                                                                                                                            child: Column(
+                                                                                                                                                                                                                      mainAxisAlignment: MainAxisAlignment.center,
+                                                                                                                                                                                                                                children: [
+                                                                                                                                                                                                                                            const Icon(Icons.school, size: 100, color: Colors.green),
+                                                                                                                                                                                                                                                        const SizedBox(height: 20),
+                                                                                                                                                                                                                                                                    const Text(
+                                                                                                                                                                                                                                                                                  "    ",
+                                                                                                                                                                                                                                                                                                style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                                                                                                                                                                                                                                                                                                            ),
+                                                                                                                                                                                                                                                                                                                        Text(": $currentVersion", style: const TextStyle(color: Colors.grey)),
+                                                                                                                                                                                                                                                                                                                                  ],
+                                                                                                                                                                                                                                                                                                                                          ),
+                                                                                                                                                                                                                                                                                                                                                ),
+                                                                                                                                                                                                                                                                                                                                                    );
+                                                                                                                                                                                                                                                                                                                                                      }
+                                                                                                                                                                                                                                                                                                                                                      }
+                                                                                                                                                                                                                                                                                                                                                      
+                                                                                                                                                            }
+                                                                                                                                                                } catch (e) {
+                                                                                                                                                                      print("  : $e");
+                                                                                                                                                                          }
+                                                                                                                                                                            }
+                                                                                                                                                                            
+                                                                                                                                                                              void showUpdateDialog(String url) {
+                                                                                                                                                                                  showDialog(
+                                                                                                                                                                                        context: context,
+                                                                                                                                                                                              barrierDismissible: false,
+                                                                                                                                                                                                    builder: (context) => AlertDialog(
+                                                                                                                                                                                                            title: const Text("   "),
+                                                                                                                                                                                                                    content: const Text("   .   ."),
+                                                                                                                                                                                                                            actions: [
+                                                                                                                                                                                                                                      ElevatedButton(
+                                                                                                                                                                                                                                                  onPressed: () {
+                                                                                                                                                                                                                                                                launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
+                                                                                                                                                                                                                                                                            },
+                                                                                                                                                                                                                                                                                        child: const Text(" "),
+                                                                                                                                                                                                                                                                                                  ),
+                                                                                                                                                                                                                                                                                                          ],
+                                                                                                                                                                                                                                                                                                                ),
+                                                                                                                                                                                                                                                                                                                    );
+                                                                                                                                                                                                                                                                                                                      }
+                                                                                                                                                                                                                                                                                                                      
+                                                                                                                                                                                                                                                                                                                        @override
+                                                                                                                                                                                                                                                                                                                          Widget build(
