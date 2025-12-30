@@ -3,35 +3,27 @@ on: [push, workflow_dispatch]
 
 jobs:
   build:
-      runs-on: ubuntu-latest
-          steps:
-                # 1.  
-                      - uses: actions/checkout@v4
-
-                            # 2.   ( )
-                                  - uses: actions/setup-java@v4
-                                          with:
-                                                    distribution: 'temurin'
-                                                              java-version: '17'
-
-                                                                    # 3.  
-                                                                          - uses: subosito/flutter-action@v2
-                                                                                  with:
-                                                                                            channel: 'stable'
-                                                                                                      flutter-version: '3.19.0'
-                                                                                                      
-                                                                                                            # 4.    (  )
-                                                                                                                  - run: flutter create .
-                                                                                                                  
-                                                                                                                        # 5.  
-                                                                                                                              - run: flutter pub get
-                                                                                                                              
-                                                                                                                                    # 6.   APK
-                                                                                                                                          - run: flutter build apk --release
-                                                                                                                                          
-                                                                                                                                                # 7.   (       )
-                                                                                                                                                      - uses: actions/upload-artifact@v4
-                                                                                                                                                              with:
-                                                                                                                                                                        name: mahadra-app-release
-                                                                                                                                                                                  path: build/app/outputs/flutter-apk/app-release.apk
-                                                                                                                                                                                  
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+          
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          flutter-version: '3.19.0'
+          
+      - run: flutter create .
+      
+      - run: flutter pub get
+      
+      - run: flutter build apk --release
+      
+      - uses: actions/upload-artifact@v4
+        with:
+          name: mahadra-app-release
+          path: build/app/outputs/flutter-apk/app-release.apk
