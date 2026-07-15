@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>علم الرسم القرآني</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #142922;
+    --bg-2: #1b3a2f;
+    --parchment: #f1e9d2;
+    --sand: #cdbd93;
+    --sand-dim: #8a8168;
+    --gold: #b58a3d;
+    --gold-soft: #6e5a2c;
+    --rust: #9a4b3f;
+    --rust-soft: #4a2c26;
+    --line: #33493f;
+  }
+  *{ box-sizing: border-box; }
+  html,body{
+    margin:0; padding:0; min-height:100vh;
+    background: radial-gradient(ellipse at top, var(--bg-2), var(--bg) 70%);
+    color: var(--parchment);
+    font-family: 'Cairo', sans-serif;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .amiri{ font-family: 'Amiri', serif; }
+
+  #app{ max-width: 480px; margin: 0 auto; min-height: 100vh; padding: 20px 18px 60px; position: relative; }
+
+  /* Header */
+  .app-header{ text-align:center; padding: 18px 0 8px; }
+  .app-header .eyebrow{ font-size: 12px; letter-spacing: 2px; color: var(--sand-dim); text-transform: uppercase; }
+  .app-header h1{ font-family:'Amiri', serif; font-size: 26px; margin: 6px 0 0; color: var(--gold); font-weight:700; }
+
+  /* Breadcrumb */
+  .crumb{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; font-size:13px; color:var(--sand-dim); margin: 18px 2px 22px; min-height:18px; }
+  .crumb span{ cursor:pointer; }
+  .crumb span.current{ color: var(--gold); }
+  .crumb .sep{ color: var(--line); cursor:default; }
+
+  .back-btn{
+    display:inline-flex; align-items:center; gap:6px; background:none; border:1px solid var(--line);
+    color: var(--sand); font-family:'Cairo',sans-serif; font-size:14px; padding:8px 14px; border-radius:999px;
+    cursor:pointer; margin-bottom: 14px;
+  }
+  .back-btn:active{ background: var(--bg-2); }
+
+  /* Home: 4 main buttons */
+  .home-grid{ display:flex; flex-direction:column; gap:14px; margin-top: 30px; }
+  .main-btn{
+    position:relative; border:1px solid var(--line); background: linear-gradient(180deg, rgba(181,138,61,0.06), transparent);
+    border-radius: 14px; padding: 22px 20px; text-align:right; cursor:pointer; overflow:hidden;
+  }
+  .main-btn::before{
+    content:''; position:absolute; right:0; top:0; bottom:0; width:3px; background: var(--gold);
+  }
+  .main-btn .num{ font-family:'Amiri',serif; font-size:13px; color: var(--sand-dim); }
+  .main-btn .name{ font-family:'Amiri',serif; font-size:22px; color: var(--parchment); margin-top:4px; font-weight:700; }
+  .main-btn .status-tag{ font-size:11px; color: var(--sand-dim); margin-top:6px; }
+  .main-btn.disabled{ opacity:0.4; }
+  .main-btn.disabled .name{ color: var(--sand-dim); }
+  .main-btn:active:not(.disabled){ background: rgba(181,138,61,0.12); }
+
+  /* List rows (children of a node) */
+  .row-list{ display:flex; flex-direction:column; gap:10px; }
+  .row-item{
+    border:1px solid var(--line); border-radius:12px; padding:14px 16px; cursor:pointer;
+    display:flex; justify-content:space-between; align-items:center; gap:10px;
+    background: rgba(255,255,255,0.015);
+  }
+  .row-item:active{ background: rgba(181,138,61,0.10); }
+  .row-item .title{ font-family:'Amiri', serif; font-size:18px; }
+  .row-item .arrow{ color: var(--sand-dim); font-size: 14px; }
+  .badge{ font-size:11px; padding:3px 10px; border-radius:999px; white-space:nowrap; }
+  .badge.del{ background: var(--rust-soft); color:#e8c3ba; }
+  .badge.fix{ background: var(--gold-soft); color:#f0dfae; }
+
+  /* Detail card */
+  .detail-card{
+    border:1px solid var(--line); border-radius: 16px; padding: 22px 20px; margin-bottom: 22px;
+    background: linear-gradient(180deg, rgba(181,138,61,0.05), transparent);
+  }
+  .detail-card .title-row{ display:flex; justify-content:space-between; align-items:flex-start; gap:10px; }
+  .detail-card h2{ font-family:'Amiri', serif; font-size: 24px; margin:0; color: var(--gold); font-weight:700; }
+  .detail-card .label{ font-size:12px; color: var(--sand-dim); margin-top: 18px; margin-bottom:6px; }
+  .detail-card .explanation{ font-size:15px; line-height:1.9; color: var(--parchment); }
+  .detail-card .examples{ font-family:'Amiri', serif; font-size: 19px; line-height:2.1; color: var(--sand); }
+  .empty-note{ font-size:13px; color: var(--sand-dim); font-style:italic; }
+
+  .section-label{ font-size:13px; color: var(--sand-dim); margin: 4px 2px 12px; }
+
+  /* connecting thread motif */
+  .thread{ position:relative; padding-right: 18px; }
+  .thread::before{
+    content:''; position:absolute; right:5px; top:4px; bottom:4px; width:1px;
+    background: repeating-linear-gradient(to bottom, var(--gold-soft) 0, var(--gold-soft) 4px, transparent 4px, transparent 9px);
+  }
+
+  .footer-note{ text-align:center; font-size:11px; color: var(--sand-dim); margin-top: 40px; }
+</style>
+</head>
+<body>
+<div id="app"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+<script>
+// ==== إعداد: رابط جدولك على Google Sheets (CSV) ====
+// هذا الرابط يسحب بيانات التبويب (gid=0) من جدولك مباشرة.
+// لو أضفت تبويبات ثانية للأبواب الأخرى، كل تبويب رح يحتاج رابط CSV خاص فيه (gid مختلف).
+const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRA_SEmkrdC6hTBhTBQ-ZiN6OQ4b8bx9MLfcANkU4ddD2I7zFx_4LU-Uf9b9bH5FdIUgATfFGKQ3fKq/pub?output=csv';
+
+let DATA = [];          // بيانات القواعد، تتعبى من الجدول مباشرة
+let MAIN_TOPICS = [];   // الأبواب الأربعة، تُبنى تلقائيًا من الصفوف اللي ما لها أب
+let path = [];          // مسار التنقل الحالي
+let loadError = null;
+
+function byId(id){ return DATA.find(d => d.id === id); }
+function childrenOf(id){ return DATA.filter(d => d.parent === id); }
+
+function normalizeRows(rows){
+  return rows
+    .filter(r => r.id !== undefined && String(r.id).trim() !== '')
+    .map(r => ({
+      id: parseInt(String(r.id).trim(), 10),
+      parent: (r.parent === undefined || String(r.parent).trim() === '') ? null : parseInt(String(r.parent).trim(), 10),
+      type: (r.type || '').trim(),
+      status: (r.status || '').trim(),
+      title: (r.title || '').trim(),
+      explanation: (r.explanation || '').trim(),
+      example: (r.example || '').trim(),
+    }));
+}
+
+function buildMainTopics(){
+  const roots = DATA.filter(d => d.parent === null);
+  MAIN_TOPICS = [0,1,2,3].map(i => {
+    const r = roots[i];
+    return r ? { id: r.id, name: r.title, active: true }
+             : { id: null, name: 'الباب ' + (i+1), active: false };
+  });
+}
+
+async function loadData(){
+  try{
+    const res = await fetch(SHEET_CSV_URL);
+    if(!res.ok) throw new Error('HTTP ' + res.status);
+    const csvText = await res.text();
+    const parsed = Papa.parse(csvText, { header: true, skipEmptyLines: true });
+    DATA = normalizeRows(parsed.data);
+    buildMainTopics();
+  } catch(err){
+    loadError = err.message || String(err);
+  }
+  render();
+}
+
+function byId(id){ return DATA.find(d => d.id === id); }
+function childrenOf(id){ return DATA.filter(d => d.parent === id); }
+
+function render(){
+  const app = document.getElementById('app');
+  app.innerHTML = '';
+
+  const header = document.createElement('div');
+  header.className = 'app-header';
+  header.innerHTML = `<div class="eyebrow">علم الرسم القرآني</div><h1>باب الحذف والإثبات</h1>`;
+  app.appendChild(header);
+
+  if(loadError){
+    const err = document.createElement('div');
+    err.className = 'detail-card';
+    err.innerHTML = `
+      <h2 style="color:#e8a99c;">تعذّر تحميل البيانات</h2>
+      <div class="explanation" style="margin-top:14px;">
+        ما قدر التطبيق يقرأ جدول Google Sheets. تأكد إن صلاحية المشاركة "أي شخص لديه الرابط - مشاهد"، وإنك تفتح هذا الملف من متصفح حقيقي (مو من داخل شات).
+      </div>
+      <div class="explanation" style="margin-top:10px; color:#8a8168; font-size:13px;">تفاصيل تقنية: ${loadError}</div>
+    `;
+    app.appendChild(err);
+    return;
+  }
+
+  if(DATA.length === 0){
+    const loading = document.createElement('div');
+    loading.className = 'detail-card';
+    loading.innerHTML = `<div class="explanation">جاري التحميل من الجدول...</div>`;
+    app.appendChild(loading);
+    return;
+  }
+
+  if(path.length === 0){
+    renderHome(app);
+  } else {
+    renderCrumb(app);
+    renderNode(app, path[path.length - 1]);
+  }
+
+  const footer = document.createElement('div');
+  footer.className = 'footer-note';
+  footer.textContent = 'البيانات محدّثة مباشرة من جدولك';
+  app.appendChild(footer);
+}
+
+function renderHome(app){
+  const grid = document.createElement('div');
+  grid.className = 'home-grid';
+  MAIN_TOPICS.forEach((t, i) => {
+    const btn = document.createElement('div');
+    btn.className = 'main-btn' + (t.active ? '' : ' disabled');
+    btn.innerHTML = `
+      <div class="num">الباب ${i+1}</div>
+      <div class="name">${t.name}</div>
+      <div class="status-tag">${t.active ? 'اضغط للدخول' : 'قريبًا'}</div>
+    `;
+    if(t.active){
+      btn.addEventListener('click', () => { path = [t.id]; render(); });
+    }
+    grid.appendChild(btn);
+  });
+  app.appendChild(grid);
+}
+
+function renderCrumb(app){
+  const crumb = document.createElement('div');
+  crumb.className = 'crumb';
+
+  const homeSpan = document.createElement('span');
+  homeSpan.textContent = 'الرئيسية';
+  homeSpan.addEventListener('click', () => { path = []; render(); });
+  crumb.appendChild(homeSpan);
+
+  path.forEach((id, idx) => {
+    const sep = document.createElement('span');
+    sep.className = 'sep';
+    sep.textContent = '‹';
+    crumb.appendChild(sep);
+
+    const node = byId(id);
+    const span = document.createElement('span');
+    span.textContent = node.title;
+    if(idx === path.length - 1) span.classList.add('current');
+    span.addEventListener('click', () => { path = path.slice(0, idx + 1); render(); });
+    crumb.appendChild(span);
+  });
+
+  app.appendChild(crumb);
+
+  const back = document.createElement('button');
+  back.className = 'back-btn';
+  back.textContent = '→ رجوع';
+  back.addEventListener('click', () => { path.pop(); render(); });
+  app.appendChild(back);
+}
+
+function renderNode(app, id){
+  const node = byId(id);
+  const kids = childrenOf(id);
+
+  // detail card for current node
+  const card = document.createElement('div');
+  card.className = 'detail-card';
+  const badgeClass = node.status.includes('محذوفة') ? 'del' : 'fix';
+  card.innerHTML = `
+    <div class="title-row">
+      <h2>${node.title}</h2>
+      <span class="badge ${badgeClass}">${node.status}</span>
+    </div>
+    ${node.explanation ? `<div class="label">الشرح</div><div class="explanation">${node.explanation}</div>` : ''}
+    ${node.example ? `<div class="label">أمثلة</div><div class="examples">${node.example}</div>` : ''}
+    ${(!node.explanation && !node.example) ? `<div class="empty-note" style="margin-top:14px;">كلمة مفردة — لا يوجد شرح إضافي</div>` : ''}
+  `;
+  app.appendChild(card);
+
+  if(kids.length){
+    const label = document.createElement('div');
+    label.className = 'section-label';
+    label.textContent = 'الاستثناءات والتفريعات (' + kids.length + ')';
+    app.appendChild(label);
+
+    const list = document.createElement('div');
+    list.className = 'row-list thread';
+    kids.forEach(k => {
+      const row = document.createElement('div');
+      row.className = 'row-item';
+      const kBadgeClass = k.status.includes('محذوفة') ? 'del' : 'fix';
+      const hasKids = childrenOf(k.id).length > 0;
+      row.innerHTML = `
+        <span class="title">${k.title}</span>
+        <span style="display:flex; align-items:center; gap:8px;">
+          <span class="badge ${kBadgeClass}">${k.status}</span>
+          ${hasKids ? '<span class="arrow">‹</span>' : ''}
+        </span>
+      `;
+      row.addEventListener('click', () => { path.push(k.id); render(); });
+      list.appendChild(row);
+    });
+    app.appendChild(list);
+  }
+}
+
+loadData();
+</script>
+</body>
+</html>
